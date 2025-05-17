@@ -1,9 +1,10 @@
-import { useCurrentUser } from "../../hooks/useCurrentUser";
 import AdminDashboard from "../../components/dashboard/AdminDashboard";
 import ApplicantDashboard from "../../components/dashboard/ApplicantDashboard";
 
+import { useAuth } from "../../hooks/useAuth";
+
 export default function DashboardPage() {
-  const user = useCurrentUser();
+  const auth = useAuth();
 
   const roleViews: Record<string, React.FC> = {
     admin: AdminDashboard,
@@ -11,8 +12,8 @@ export default function DashboardPage() {
     // mentor: MentorDashboard,
   };
 
-  const RoleDashboard = user
-    ? roleViews[user.role]
+  const RoleDashboard = auth.user
+    ? roleViews[auth.user.role]
     : () => <p>Dashboard coming soon for your role.</p>;
 
   return (

@@ -1,9 +1,10 @@
-import { useCurrentUser } from "../../hooks/useCurrentUser";
 import AdminProfile from "../../components/profile/AdminProfile";
 import ApplicantProfile from "../../components/profile/ApplicantProfile";
 
+import { useAuth } from "../../hooks/useAuth";
+
 export default function ProfilePage() {
-  const user = useCurrentUser();
+  const auth = useAuth();
 
   const roleProfiles: Record<string, React.FC> = {
     admin: AdminProfile,
@@ -11,8 +12,8 @@ export default function ProfilePage() {
     // mentor: MentorProfile
   };
 
-  const RoleProfile = user
-    ? roleProfiles[user.role]
+  const RoleProfile = auth.user
+    ? roleProfiles[auth.user.role]
     : () => <p>Profile page not available for your role.</p>;
 
   return (

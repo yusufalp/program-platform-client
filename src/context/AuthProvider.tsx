@@ -8,6 +8,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -17,6 +18,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
     }
+
+    setLoading(false);
   }, []);
 
   const login = (user: User, token: string) => {
@@ -32,6 +35,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>

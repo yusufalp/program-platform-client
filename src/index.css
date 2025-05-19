@@ -3,8 +3,7 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -12,6 +11,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  margin: 0;
+  padding: 2rem;
+  line-height: 1;
+}
+
+/* Anchor tag */
 a {
   font-weight: 500;
   color: #646cff;
@@ -21,12 +27,7 @@ a:hover {
   color: #535bf2;
 }
 
-body {
-  margin: 0;
-  padding: 2rem;
-  line-height: 1.;
-}
-
+/* buttons */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -35,9 +36,57 @@ button {
   font-weight: 500;
   font-family: inherit;
   background-color: #1a1a1a;
+  color: rgba(255, 255, 255, 0.87);
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
   border-color: #646cff;
+}
+
+/* Forms */
+form {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+}
+
+form div {
+  display: flex;
+  flex-direction: column;
+  margin: 16px 0;
+}
+
+form label:not(:last-child) {
+  font-size: 1.2rem;
+}
+
+form input,
+form textarea,
+form select {
+  font-size: 1.2rem;
+  padding: 8px;
+}
+
+form button {
+  margin-top: 32px;
+}
+
+@media screen and (min-width: 768px) {
+  form {
+    width: 480px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  form {
+    width: 540px;
+  }
+}
+
+@media screen and (min-width: 1152px) {
+  form {
+    width: 600px;
+  }
 }

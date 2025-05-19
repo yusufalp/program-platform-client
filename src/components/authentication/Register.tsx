@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -15,13 +19,35 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Registering...");
+    const url = `${import.meta.env.VITE_USER_SERVICE_URL}/register`;
+
+    const options: RequestInit = {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(result.message);
+        navigate("/login");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
   };
 
   return (
     <div>
-      <h1>Register</h1>
       <form onSubmit={handleSubmit}>
+        <h1>Register</h1>
+        <p>Let us create your account</p>
         <div>
           <label htmlFor="firstName">First Name</label>
           <input
@@ -63,6 +89,9 @@ export default function Register() {
           />
         </div>
         <button type="submit">Register</button>
+        <p>
+          {`Already have an account?`} <Link to="/login">Login</Link>
+        </p>
       </form>
     </div>
   );

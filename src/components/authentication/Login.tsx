@@ -1,6 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { Link } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -13,13 +19,37 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log("Logging in...");
+    const url = `${import.meta.env.VITE_USER_SERVICE_URL}/login`;
+
+    const options: RequestInit = {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    };
+
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
+
+      if (response.ok) {
+        const { data, token } = result;
+
+        login(data.user, token);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.log("error :>> ", error);
+    }
   };
 
   return (
     <div>
-      <h1>Login</h1>
       <form onSubmit={handleSubmit}>
+        <h1>Login</h1>
+        <p>Login to your account </p>
         <div>
           <label htmlFor="email">Email</label>
           <input
@@ -41,6 +71,9 @@ export default function Login() {
           />
         </div>
         <button type="submit">Login</button>
+        <p>
+          {`Don't have an account?`} <Link to="/register">Register</Link>
+        </p>
       </form>
     </div>
   );

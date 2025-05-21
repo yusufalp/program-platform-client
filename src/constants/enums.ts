@@ -1,0 +1,1 @@
+// App wide enums (e.g. user roles)

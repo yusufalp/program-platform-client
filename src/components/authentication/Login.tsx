@@ -38,7 +38,7 @@ export default function Login() {
         const { data, token } = result;
 
         login(data.user, token);
-        navigate("/dashboard");
+        navigate(`/dashboard/${data.user._id}`);
       }
     } catch (error) {
       console.log("error :>> ", error);

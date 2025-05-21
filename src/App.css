@@ -2,3 +2,51 @@
   max-width: 1280px;
   margin: 0 auto;
 }
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+  gap: 32px;
+}
+
+.navigation button {
+  flex: 1;
+}
+
+.submit-button {
+  background-color: var(--info-color);
+  color: var(--light-text-color);
+}
+
+.divider {
+  border: 2px solid var(--success-color);
+  width: 100%;
+  margin: 16px 0;
+}
+
+@media screen and (min-width: 420px) {
+  .navigation {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .navigation {
+    width: 480px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .navigation {
+    width: 540px;
+  }
+}
+
+@media screen and (min-width: 1152px) {
+  .navigation {
+    width: 600px;
+  }
+}

@@ -25,8 +25,8 @@
 }
 
 body {
-  margin: 0;
-  padding: 2rem;
+  /* margin: 0;
+  padding: 2rem; */
   line-height: 1;
 }
 
@@ -74,7 +74,7 @@ form {
 form div {
   display: flex;
   flex-direction: column;
-  margin: 16px 0;
+  margin: 8px 0;
 }
 
 form label {
@@ -85,7 +85,7 @@ form input,
 form textarea,
 form select {
   font-size: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem;
   border: 1px solid var(--dark-bg-color);
   border-radius: 8px;
   transition: border-color 0.2s ease;
@@ -101,6 +101,16 @@ form select:focus {
 
 form button {
   margin-top: 32px;
+}
+
+/* Header and Navigation */
+
+nav ul {
+  display: flex;
+  justify-content: flex-end;
+  gap: 32px;
+  list-style: none;
+  padding-left: 0;
 }
 
 @media screen and (min-width: 768px) {

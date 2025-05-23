@@ -1,10 +1,19 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Header() {
   const auth = useContext(AuthContext);
-  console.log("auth :>> ", auth);
+
+  const navigate = useNavigate();
+
+  const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault();
+
+    auth?.logout();
+
+    navigate("/login");
+  };
 
   return (
     <nav>
@@ -17,7 +26,9 @@ export default function Header() {
             <Link to={`/profile/${auth.user?._id}`}>Profile</Link>
           </li>
           <li>
-            <button onClick={() => auth?.logout()}>Logout</button>
+            <Link to="/login" onClick={handleLogout}>
+              Logout
+            </Link>
           </li>
         </ul>
       ) : (

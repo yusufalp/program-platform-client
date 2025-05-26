@@ -1,4 +1,4 @@
-import type { Profile } from "../../../types/profile";
+import type { Profile } from "../../../../types/profile";
 
 interface LinksStepProps {
   data: Profile;
@@ -20,7 +20,7 @@ export default function LinksStep({ data, setData }: LinksStepProps) {
 
   return (
     <div>
-      <h2>Social Media</h2>
+      <h3>Social Media Information</h3>
       <div>
         <label htmlFor="linkedin">LinkedIn</label>
         <input

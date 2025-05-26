@@ -1,7 +1,7 @@
-import AdminDashboard from "../../components/dashboard/AdminDashboard";
-import ApplicantDashboard from "../../components/dashboard/ApplicantDashboard";
+import AdminDashboard from "../features/dashboard/components/AdminDashboard";
+import ApplicantDashboard from "../features/dashboard/components/ApplicantDashboard";
 
-import { useAuth } from "../../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 
 export default function DashboardPage() {
   const auth = useAuth();

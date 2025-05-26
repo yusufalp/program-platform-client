@@ -1,8 +1,6 @@
-import type React from "react";
-
-import type { Profile } from "../../../types/profile";
-import { STATES } from "../../../constants/states";
-import { COUNTRIES } from "../../../constants/countries";
+import type { Profile } from "../../../../types/profile";
+import { STATES } from "../../../../constants/states";
+import { COUNTRIES } from "../../../../constants/countries";
 
 interface AddressStepProps {
   data: Profile;
@@ -33,7 +31,7 @@ export default function AddressStep({ data, setData }: AddressStepProps) {
 
   return (
     <div>
-      <h2>Address</h2>
+      <h3>Address Information</h3>
       <div>
         <label htmlFor="line1">Street Line 1</label>
         <input
@@ -106,7 +104,7 @@ export default function AddressStep({ data, setData }: AddressStepProps) {
             Select a country
           </option>
           {COUNTRIES.map((country) => (
-            <option key={country.alpha3} value={country.alpha3}>
+            <option key={country.alpha3} value={country.name}>
               {country.alpha3} - {country.name}
             </option>
           ))}

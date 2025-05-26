@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import AdminProfile from "../../components/profile/AdminProfile";
-import ApplicantProfile from "../../components/profile/ApplicantProfile";
+import Profile from "../features/profile/components/Profile";
 
-import { useAuth } from "../../hooks/useAuth";
-import checkProfile from "../../utils/checkProfile";
+import { useAuth } from "../hooks/useAuth";
+import checkProfile from "../lib/checkProfile";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
@@ -21,7 +20,7 @@ export default function ProfilePage() {
         const exists = await checkProfile(auth.user._id, auth.token);
 
         if (!exists) {
-          navigate("/create-profile");
+          navigate("/profile-form");
         }
       } catch (error) {
         console.log(error);
@@ -36,8 +35,8 @@ export default function ProfilePage() {
   if (loading) return <p>Loading...</p>;
 
   const roleProfiles: Record<string, React.FC> = {
-    admin: AdminProfile,
-    applicant: ApplicantProfile,
+    admin: Profile,
+    applicant: Profile,
     // mentor: MentorProfile
   };
 

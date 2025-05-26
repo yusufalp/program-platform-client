@@ -1,4 +1,4 @@
-import type { Profile } from "../../../types/profile";
+import type { Profile } from "../../../../types/profile";
 
 interface ReviewStepProps {
   data: Profile;
@@ -7,19 +7,14 @@ interface ReviewStepProps {
 export default function ReviewStep({ data }: ReviewStepProps) {
   return (
     <div>
-      <h2>Review</h2>
-      <p>Please review your information</p>
       <div>
         <h3>Address</h3>
-        <address>
-          <p>
-            {data.address?.street?.line1} {data.address?.street?.line2}
-          </p>
-          <p>
-            {data.address?.city}, {data.address?.state}{" "}
-            {data.address?.postalCode}
-          </p>
-        </address>
+        <p>Street Line 1: {data.address?.street?.line1 || "N/A"}</p>
+        <p>Street Line 2: {data.address?.street?.line2 || "N/A"}</p>
+        <p>City: {data.address?.city || "N/A"}</p>
+        <p>State: {data.address?.state || "N/A"}</p>
+        <p>Postal Code: {data.address?.postalCode || "N/A"}</p>
+        <p>Country: {data.address?.country || "N/A"}</p>
       </div>
 
       <hr className="divider" />

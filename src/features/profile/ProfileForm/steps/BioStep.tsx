@@ -1,4 +1,4 @@
-import type { Profile } from "../../../types/profile";
+import type { Profile } from "../../../../types/profile";
 
 interface BioStepProps {
   data: Profile;
@@ -10,6 +10,7 @@ export default function BioStep({ data, setData }: BioStepProps) {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
+
     setData({
       ...data,
       [name]: value,
@@ -18,7 +19,7 @@ export default function BioStep({ data, setData }: BioStepProps) {
 
   return (
     <div>
-      <h2>Personal Information</h2>
+      <h3>Personal Information</h3>
       <div>
         <label htmlFor="bio">Bio</label>
         <textarea

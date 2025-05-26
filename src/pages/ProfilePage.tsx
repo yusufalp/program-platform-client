@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import Profile from "../features/profile/components/Profile";
+import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../hooks/useAuth";
-import checkProfile from "../lib/checkProfile";
-import { useNavigate } from "react-router-dom";
+
+import Profile from "../features/profile/components/Profile";
+import hasProfile from "../lib/checkProfile";
 
 export default function ProfilePage() {
   const auth = useAuth();
@@ -16,9 +17,9 @@ export default function ProfilePage() {
       if (!auth.user || !auth.token) return;
 
       try {
-        const exists = await checkProfile(auth.user._id, auth.token);
+        const profileExists = await hasProfile(auth.user._id, auth.token);
 
-        if (!exists) {
+        if (!profileExists) {
           navigate("/profile-form");
         }
       } catch (error) {
@@ -40,7 +41,8 @@ export default function ProfilePage() {
   };
 
   const RoleProfile = auth.user
-    ? roleProfiles[auth.user.role] ?? (() => <p>No profile component found for your role.</p>)
+    ? roleProfiles[auth.user.role] ??
+      (() => <p>No profile component found for your role.</p>)
     : () => <p>You must be logged in to view this page.</p>;
 
   return (

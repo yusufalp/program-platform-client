@@ -1,4 +1,4 @@
-export default async function checkProfile(userId: string, token: string) {
+export default async function hasProfile(userId: string, token: string) {
   const url = `${import.meta.env.VITE_PROFILE_SERVICE_URL}/${userId}`;
 
   const options = {

@@ -25,6 +25,11 @@ export default function Header() {
           <li>
             <Link to={`/profile/${auth.user?._id}`}>Profile</Link>
           </li>
+          {auth.user?.role === "applicant" && (
+            <li>
+              <Link to={`/application/${auth.user?._id}`}>Application</Link>
+            </li>
+          )}
           <li>
             <Link to="/login" onClick={handleLogout}>
               Logout

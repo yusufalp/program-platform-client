@@ -1,21 +1,21 @@
 export interface Profile {
   userId: string;
-  bio?: string;
-  dateOfBirth?: string;
+  bio: string;
+  dateOfBirth: string;
   phoneNumber: string;
   status: "active" | "inactive" | "graduated";
   cohort: number;
   graduationDate: string;
 
-  address?: {
-    street?: {
-      line1?: string;
+  address: {
+    street: {
+      line1: string;
       line2?: string;
     };
-    city?: string;
-    state?: string;
-    postalCode?: string;
-    country?: string;
+    city: string;
+    state: string;
+    postalCode: string;
+    country: string;
   };
 
   socials?: {
@@ -26,4 +26,9 @@ export interface Profile {
 
   createdAt?: string;
   updatedAt?: string;
+}
+
+export interface StepProps {
+  data: Profile;
+  setData: React.Dispatch<React.SetStateAction<Profile>>;
 }

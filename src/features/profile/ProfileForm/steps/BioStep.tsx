@@ -1,21 +1,19 @@
-import type { Profile } from "../../../../types/profile";
+import type { StepProps } from "../../types/profile";
 
-interface BioStepProps {
-  data: Profile;
-  setData: (value: Profile) => void;
-}
-
-export default function BioStep({ data, setData }: BioStepProps) {
+export default function BioStep({ data, setData }: StepProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
 
-    setData({
-      ...data,
+    setData((prevData) => ({
+      ...prevData,
       [name]: value,
-    });
+    }));
   };
+
+  // Get today's date in YYYY-MM-DD format for the max attribute
+  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div>
@@ -28,6 +26,7 @@ export default function BioStep({ data, setData }: BioStepProps) {
           value={data.bio}
           onChange={handleChange}
           placeholder="Tell us about yourself..."
+          rows={5}
         />
       </div>
 
@@ -39,7 +38,7 @@ export default function BioStep({ data, setData }: BioStepProps) {
           id="dateOfBirth"
           value={data.dateOfBirth}
           onChange={handleChange}
-          max={new Date().toISOString().split("T")[0]}
+          max={today}
         />
       </div>
       <div>
@@ -48,7 +47,9 @@ export default function BioStep({ data, setData }: BioStepProps) {
           type="tel"
           name="phoneNumber"
           id="phoneNumber"
+          // A more robust pattern might be: ^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$
           pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+          placeholder="e.g., 123-456-7890"
           value={data.phoneNumber}
           onChange={handleChange}
         />

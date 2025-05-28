@@ -1,39 +1,79 @@
-import type { Profile } from "../../../../types/profile";
+import type { StepProps } from "../../types/profile";
 
-interface ReviewStepProps {
-  data: Profile;
-}
-
-export default function ReviewStep({ data }: ReviewStepProps) {
+export default function ReviewStep({ data }: StepProps) {
   return (
     <div>
-      <div>
-        <h3>Address</h3>
-        <p>Street Line 1: {data.address?.street?.line1 || "N/A"}</p>
-        <p>Street Line 2: {data.address?.street?.line2 || "N/A"}</p>
-        <p>City: {data.address?.city || "N/A"}</p>
-        <p>State: {data.address?.state || "N/A"}</p>
-        <p>Postal Code: {data.address?.postalCode || "N/A"}</p>
-        <p>Country: {data.address?.country || "N/A"}</p>
-      </div>
+      <h2>Review Your Profile Information</h2>
+      <p>
+        Please review all the details below. You can go back to edit any section
+        if needed.
+      </p>
 
       <hr className="divider" />
 
-      <div>
-        <h3>Personal Information</h3>
-        <p>Bio: {data.bio}</p>
-        <p>Date of Birth: {data.dateOfBirth}</p>
-        <p>Phone number: {data.phoneNumber}</p>
-      </div>
+      <section className="review-section">
+        <h3>1. Personal Details</h3>
+        <p>
+          <strong>Bio:</strong>
+        </p>
+        <div className="review-content-box">
+          <p>{data.bio || "Not provided"}</p>
+        </div>
+        <p>
+          <strong>Date of Birth:</strong> {data.dateOfBirth || "Not provided"}
+        </p>
+        <p>
+          <strong>Phone Number:</strong> {data.phoneNumber || "Not provided"}
+        </p>
+        <p>
+          <strong>Current Status:</strong> {data.status || "Not provided"}
+        </p>
+        <p>
+          <strong>Cohort:</strong> {data.cohort || "Not provided"}
+        </p>
+        <p>
+          <strong>Graduation Date:</strong>{data.graduationDate || "Not provided"}
+        </p>
+      </section>
+      
+      <hr className="divider" />
+
+      <section className="review-section">
+        <h3>2. Address</h3>
+        <p>
+          <strong>Street Line 1:</strong>{data.address.street.line1 || "Not provided"}
+        </p>
+        <p>
+          <strong>Street Line 2:</strong> {data.address.street.line2 || "N/A"}
+        </p>
+        <p>
+          <strong>City:</strong> {data.address.city || "Not provided"}
+        </p>
+        <p>
+          <strong>State:</strong> {data.address.state || "Not provided"}
+        </p>
+        <p>
+          <strong>Postal Code:</strong>{data.address.postalCode || "Not provided"}
+        </p>
+        <p>
+          <strong>Country:</strong> {data.address.country || "Not provided"}
+        </p>
+      </section>
 
       <hr className="divider" />
 
-      <div>
-        <h3>Links</h3>
-        <p>LinkedIn: {data.socials?.linkedin}</p>
-        <p>GitHub: {data.socials?.github}</p>
-        <p>Website: {data.socials?.website}</p>
-      </div>
+      <section className="review-section">
+        <h3>3. Social & Web Links</h3>
+        <p>
+          <strong>LinkedIn:</strong> {data.socials?.linkedin || "Not provided"}
+        </p>
+        <p>
+          <strong>GitHub:</strong> {data.socials?.github || "Not provided"}
+        </p>
+        <p>
+          <strong>Website:</strong> {data.socials?.website || "Not provided"}
+        </p>
+      </section>
 
       <hr className="divider" />
     </div>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../hooks/useAuth";
-import type { Profile } from "../../../types/profile";
+import type { Profile } from "../types/profile";
 
 import AddressStep from "./steps/AddressStep";
 import BioStep from "./steps/BioStep";
@@ -15,29 +15,30 @@ export default function ProfileForm() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [profileData, setProfileData] = useState<Profile>({
-    userId: user?._id || "", // Or some default value if applicable
+    userId: user?._id || "",
     bio: "",
     dateOfBirth: "",
     phoneNumber: "",
     status: "active",
     cohort: 0,
     graduationDate: "",
-    address: {},
+    address: {
+      street: {
+        line1: "",
+      },
+      city: "",
+      state: "",
+      postalCode: "",
+      country: "",
+    },
     socials: {},
   });
 
-  // const steps = [
-  //   <AddressStep data={profileData} setData={setProfileData} />,
-  //   <BioStep data={profileData} setData={setProfileData} />,
-  //   <LinksStep data={profileData} setData={setProfileData} />,
-  //   <ReviewStep data={profileData} />,
-  // ];
-
   const steps = [
     { component: AddressStep, title: "Address" },
-    { component: BioStep, title: "Bio" },
-    { component: LinksStep, title: "Links" },
-    { component: ReviewStep, title: "Review" },
+    { component: BioStep, title: "Biography" },
+    { component: LinksStep, title: "Social Links" },
+    { component: ReviewStep, title: "Review Profile" },
   ];
 
   const CurrentStepComponent = steps[currentStep].component;
@@ -59,7 +60,7 @@ export default function ProfileForm() {
     console.log(profileData);
 
     try {
-      const body = { ...profileData, userId: user?._id };
+      const body = { ...profileData };
 
       const url = import.meta.env.VITE_PROFILE_SERVICE_URL;
       const endpoint = "/create";
@@ -79,7 +80,7 @@ export default function ProfileForm() {
       if (!response.ok) {
         const errorData = await response.json();
         console.log("errorData :>> ", errorData);
-        throw new Error(errorData.message || "Something went wrong");
+        throw new Error(errorData.message || "Failed to submit Profile");
       }
 
       const result = await response.json();
@@ -93,24 +94,34 @@ export default function ProfileForm() {
 
   return (
     <div>
-      <form>
+      <form onSubmit={handleSubmit}>
         {currentStep === steps.length - 1 ? (
           <>
-            <h2>Review</h2>
-            <p>Please review your information below</p>
+            <h2>Review Your Profile</h2>
+            <p>Confirm the information below and submit</p>
           </>
         ) : (
-          <h2>Complete Your Profile</h2>
+          <>
+            <h2>{steps[currentStep].title}</h2>
+            <p>Please complete all required fields</p>
+          </>
         )}
 
         <CurrentStepComponent data={profileData} setData={setProfileData} />
 
         {currentStep === steps.length - 1 ? (
           <div className="form-actions">
-            <button type="button" onClick={() => setCurrentStep(0)}>
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={() => setCurrentStep(0)}
+            >
               Edit Profile
             </button>
-            <button type="button" onClick={handleSubmit}>
+            <button 
+              type="submit" 
+              className="button-primary"
+            >
               Submit Profile
             </button>
           </div>
@@ -118,12 +129,17 @@ export default function ProfileForm() {
           <div className="step-actions">
             <button
               type="button"
+              className="button-secondary"
               onClick={prevStep}
               disabled={currentStep === 0}
             >
               Previous
             </button>
-            <button type="button" onClick={nextStep}>
+            <button 
+              type="button" 
+              className="button-primary"
+              onClick={nextStep}
+            >
               Next
             </button>
           </div>

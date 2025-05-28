@@ -1,21 +1,16 @@
-import type { Profile } from "../../../../types/profile";
+import type { StepProps } from "../../types/profile";
 
-interface LinksStepProps {
-  data: Profile;
-  setData: (value: Profile) => void;
-}
-
-export default function LinksStep({ data, setData }: LinksStepProps) {
+export default function LinksStep({ data, setData }: StepProps) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    setData({
-      ...data,
+    setData((prevData) => ({
+      ...prevData,
       socials: {
-        ...data.socials,
+        ...prevData.socials,
         [name]: value,
       },
-    });
+    }));
   };
 
   return (
@@ -29,6 +24,7 @@ export default function LinksStep({ data, setData }: LinksStepProps) {
           id="linkedin"
           value={data.socials?.linkedin}
           onChange={handleChange}
+          placeholder="e.g., https://linkedin.com/in/yourprofile"
         />
       </div>
       <div>
@@ -39,6 +35,7 @@ export default function LinksStep({ data, setData }: LinksStepProps) {
           id="github"
           value={data.socials?.github}
           onChange={handleChange}
+          placeholder="e.g., https://github.com/yourusername"
         />
       </div>
       <div>
@@ -49,6 +46,7 @@ export default function LinksStep({ data, setData }: LinksStepProps) {
           id="website"
           value={data.socials?.website}
           onChange={handleChange}
+          placeholder="e.g., https://www.yourwebsite.com"
         />
       </div>
     </div>

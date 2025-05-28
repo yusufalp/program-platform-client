@@ -3,13 +3,17 @@ import { Route, Routes } from "react-router-dom";
 import "./App.css";
 
 import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
+import ApplicationPage from "./pages/ApplicationPage";
+
+import PrivateRoute from "./common/components/PrivateRoute";
+
 import Header from "./common/components/Header";
 import Login from "./features/authentication/components/Login";
-import PrivateRoute from "./common/components/PrivateRoute";
-import ProfilePage from "./pages/ProfilePage";
 import Register from "./features/authentication/components/Register";
-import NotFoundPage from "./pages/NotFoundPage";
 import ProfileForm from "./features/profile/ProfileForm/ProfileForm";
+
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -21,6 +25,7 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard/:userId" element={<DashboardPage />} />
           <Route path="/profile/:userId" element={<ProfilePage />} />
+          <Route path="/application/:userId" element={<ApplicationPage />} />
           <Route path="/profile-form" element={<ProfileForm />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

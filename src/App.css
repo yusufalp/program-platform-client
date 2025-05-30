@@ -50,3 +50,132 @@
     width: 600px;
   }
 }
+
+/* --- Global Navigation Styles --- */
+.header-nav {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: var(--dark-bg-color);
+  color: var(--light-text-color);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  min-height: 50px;
+}
+
+.header-logo a {
+  color: var(--light-text-color);
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.3em;
+}
+
+/* --- Logged Out Links Styles --- */
+.header-logged-out-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.header-logged-out-links li a {
+  color: var(--light-text-color);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.header-logged-out-links li a:hover {
+  background-color: var(--dark-bg-color);
+}
+
+/* --- Logged In Burger Menu Container --- */
+.header-logged-in {
+  position: relative; /* Essential for positioning the dropdown menu */
+  display: flex; /* Allows button and menu to be flexible */
+  align-items: center;
+}
+
+/* --- Burger Menu Icon Styles --- */
+.burger-menu-icon {
+  display: flex; /* Make it visible */
+  flex-direction: column; /* Stack the bars vertically */
+  justify-content: space-around; /* Distribute bars evenly */
+  width: 30px; /* Width of the burger icon */
+  height: 34px; /* Height of the burger icon */
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 1001; /* Ensure icon is above the dropdown menu */
+  outline: none; /* Remove default outline on focus if desired */
+}
+
+.burger-bar {
+  width: 100%;
+  height: 3px;
+  background-color: var(--light-text-color);
+  border-radius: 2px;
+  transition: all 0.3s ease-in-out; /* Smooth transition for bar transformation */
+}
+
+/* Optional: Burger Icon Animation (transforms to an 'X' when open) */
+.burger-menu-icon.open .burger-bar:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+
+.burger-menu-icon.open .burger-bar:nth-child(2) {
+  opacity: 0; /* Hide the middle bar */
+}
+
+.burger-menu-icon.open .burger-bar:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+/* --- Burger Menu Items (Dropdown) Styles --- */
+.burger-menu-items {
+  list-style: none;
+  margin: 0;
+  padding: 10px 0;
+  background-color: var(--dark-bg-color);
+  min-width: 180px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  opacity: 0;
+  /* visibility: hidden; */
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease-out, transform 0.3s ease-out,
+    visibility 0.3s ease-out;
+  z-index: 1000;
+}
+
+.burger-menu-items.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+nav li a {
+  display: block;
+  padding: 8px 15px;
+  color: var(--light-text-color);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+nav li a:hover {
+  background-color: var(--secondary-color);
+  color: var(--dark-text-color);
+  text-decoration: none;
+}

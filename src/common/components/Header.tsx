@@ -1,41 +1,74 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../context/AuthContext";
 
 export default function Header() {
   const auth = useContext(AuthContext);
-
   const navigate = useNavigate();
+
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen((prevState) => !prevState);
+  };
 
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
 
     auth?.logout();
-
     navigate("/login");
+    setIsMenuOpen(false);
   };
 
   return (
-    <nav>
+    <nav className="header-nav">
       {auth?.token ? (
-        <ul>
-          <li>
-            <Link to={`/dashboard/${auth.user?._id}`}>Dashboard</Link>
-          </li>
-          <li>
-            <Link to={`/profile/${auth.user?._id}`}>Profile</Link>
-          </li>
-          {auth.user?.role === "applicant" && (
+        <div className="header-logged-in">
+          <button
+            className={`burger-menu-icon ${isMenuOpen ? "open" : ""}`}
+            onClick={toggleMenu}
+            aria-expanded={isMenuOpen}
+            aria-controls="main-navigation-menu"
+            aria-label="Toggle navigation menu"
+          >
+            <span className="burger-bar"></span>
+            <span className="burger-bar"></span>
+            <span className="burger-bar"></span>
+          </button>
+          <ul className={`burger-menu-items ${isMenuOpen ? "open" : ""}`}>
             <li>
-              <Link to={`/application/${auth.user?._id}`}>Application</Link>
+              <Link
+                to="/dashboard"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Dashboard
+              </Link>
             </li>
-          )}
-          <li>
-            <Link to="/login" onClick={handleLogout}>
-              Logout
-            </Link>
-          </li>
-        </ul>
+            <li>
+              <Link
+                to="/profile"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Profile
+              </Link>
+            </li>
+            {auth.user?.role === "applicant" && (
+              <li>
+                <Link
+                  to="/application"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Application
+                </Link>
+              </li>
+            )}
+            <li>
+              <Link to="" onClick={handleLogout}>
+                Logout
+              </Link>
+            </li>
+          </ul>
+        </div>
       ) : (
         <ul>
           <li>

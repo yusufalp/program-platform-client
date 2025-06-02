@@ -12,7 +12,6 @@ export default function ReviewStep({ data }: StepProps) {
       <hr className="divider" />
 
       <section className="review-section">
-        <h3>1. Personal Details</h3>
         <p>
           <strong>Bio:</strong>
         </p>
@@ -25,35 +24,30 @@ export default function ReviewStep({ data }: StepProps) {
         <p>
           <strong>Phone Number:</strong> {data.phoneNumber || "Not provided"}
         </p>
-        <p>
-          <strong>Current Status:</strong> {data.status || "Not provided"}
-        </p>
-        <p>
-          <strong>Cohort:</strong> {data.cohort || "Not provided"}
-        </p>
-        <p>
-          <strong>Graduation Date:</strong>{data.graduationDate || "Not provided"}
-        </p>
       </section>
-      
+
       <hr className="divider" />
 
       <section className="review-section">
-        <h3>2. Address</h3>
         <p>
-          <strong>Street Line 1:</strong>{data.address.street.line1 || "Not provided"}
+          <strong>Street Line 1: </strong>
+          {data.address.street.line1 || "Not provided"}
         </p>
         <p>
-          <strong>Street Line 2:</strong> {data.address.street.line2 || "N/A"}
+          <strong>Street Line 2: </strong>
+          {data.address.street.line2 || "N/A"}
         </p>
         <p>
-          <strong>City:</strong> {data.address.city || "Not provided"}
+          <strong>City: </strong>
+          {data.address.city || "Not provided"}
         </p>
         <p>
-          <strong>State:</strong> {data.address.state || "Not provided"}
+          <strong>State: </strong>
+          {data.address.state || "Not provided"}
         </p>
         <p>
-          <strong>Postal Code:</strong>{data.address.postalCode || "Not provided"}
+          <strong>Postal Code:</strong>
+          {data.address.postalCode || "Not provided"}
         </p>
         <p>
           <strong>Country:</strong> {data.address.country || "Not provided"}
@@ -63,7 +57,6 @@ export default function ReviewStep({ data }: StepProps) {
       <hr className="divider" />
 
       <section className="review-section">
-        <h3>3. Social & Web Links</h3>
         <p>
           <strong>LinkedIn:</strong> {data.socials?.linkedin || "Not provided"}
         </p>

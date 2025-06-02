@@ -1,19 +1,20 @@
-import ApplicantApplication from "../features/application/components/ApplicantApplication";
+import Application from "../features/application/components/Application";
 import { useAuth } from "../hooks/useAuth";
 
 export default function ApplicationPage() {
-  const auth = useAuth();
+  const { user } = useAuth();
 
   const roleViews: Record<string, React.FC> = {
-    applicant: ApplicantApplication,
+    applicant: Application,
   };
 
-  const RoleApplication = auth.user
-    ? roleViews[auth.user.role]
-    : () => <p>Application is coming soon for your role</p>;
+  const RoleApplication = user
+    ? roleViews[user.role] ??
+      (() => <p>No profile component found for your role.</p>)
+    : () => <p>You must be logged in to view this page.</p>;
 
   return (
-    <div className="p-4">
+    <div>
       <RoleApplication />
     </div>
   );

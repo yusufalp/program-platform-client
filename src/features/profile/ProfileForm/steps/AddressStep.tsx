@@ -36,7 +36,7 @@ export default function AddressStep({ data, setData }: StepProps) {
 
   return (
     <div>
-      <h3>Address Information</h3>
+      <h2>Address Information</h2>
       <div>
         <label htmlFor="line1">Street Line 1</label>
         <input

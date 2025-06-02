@@ -17,7 +17,7 @@ export default function BioStep({ data, setData }: StepProps) {
 
   return (
     <div>
-      <h3>Personal Information</h3>
+      <h2>Personal Information</h2>
       <div>
         <label htmlFor="bio">Bio</label>
         <textarea

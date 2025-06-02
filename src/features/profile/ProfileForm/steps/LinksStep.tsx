@@ -15,7 +15,7 @@ export default function LinksStep({ data, setData }: StepProps) {
 
   return (
     <div>
-      <h3>Social Media Information</h3>
+      <h2>Social Media Information</h2>
       <div>
         <label htmlFor="linkedin">LinkedIn</label>
         <input

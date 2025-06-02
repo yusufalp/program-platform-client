@@ -15,11 +15,6 @@
   flex: 1;
 }
 
-.submit-button {
-  background-color: var(--info-color);
-  color: var(--light-text-color);
-}
-
 .divider {
   border: 2px solid var(--success-color);
   width: 100%;

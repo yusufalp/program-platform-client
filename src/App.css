@@ -108,6 +108,10 @@
   outline: none; /* Remove default outline on focus if desired */
 }
 
+.burger-menu-icon:hover {
+  background: transparent;
+}
+
 .burger-bar {
   width: 100%;
   height: 3px;

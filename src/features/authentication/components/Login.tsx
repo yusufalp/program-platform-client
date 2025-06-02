@@ -19,8 +19,9 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const url = `${import.meta.env.VITE_USER_SERVICE_URL}/login`;
+    const USER_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
 
+    const url = `${USER_SERVICE_URL}/login`;
     const options: RequestInit = {
       method: "POST",
       credentials: "include",
@@ -32,13 +33,13 @@ export default function Login() {
 
     try {
       const response = await fetch(url, options);
-      const result = await response.json();
 
       if (response.ok) {
+        const result = await response.json();
         const { data, token } = result;
 
         login(data.user, token);
-        navigate(`/dashboard/${data.user._id}`);
+        navigate("/dashboard");
       }
     } catch (error) {
       console.log("error :>> ", error);

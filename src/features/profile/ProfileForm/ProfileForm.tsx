@@ -25,6 +25,7 @@ export default function ProfileForm() {
     address: {
       street: {
         line1: "",
+        line2: "",
       },
       city: "",
       state: "",
@@ -57,14 +58,14 @@ export default function ProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(profileData);
+    console.log('profileData :>> ', profileData);
 
     try {
       const body = { ...profileData };
 
-      const url = import.meta.env.VITE_PROFILE_SERVICE_URL;
-      const endpoint = "/create";
+      const PROFILE_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/profile`;
 
+      const url = `${PROFILE_SERVICE_URL}/create`;
       const options: RequestInit = {
         method: "POST",
         credentials: "include",
@@ -74,7 +75,7 @@ export default function ProfileForm() {
         body: JSON.stringify(body),
       };
 
-      const response = await fetch(`${url}${endpoint}`, options);
+      const response = await fetch(url, options);
       console.log("response :>> ", response);
 
       if (!response.ok) {
@@ -86,7 +87,7 @@ export default function ProfileForm() {
       const result = await response.json();
       console.log("result :>> ", result);
 
-      navigate(`/profile/${user?._id}`);
+      navigate("/profile");
     } catch (error) {
       console.log(error);
     }
@@ -95,17 +96,6 @@ export default function ProfileForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {currentStep === steps.length - 1 ? (
-          <>
-            <h2>Review Your Profile</h2>
-            <p>Confirm the information below and submit</p>
-          </>
-        ) : (
-          <>
-            <h2>{steps[currentStep].title}</h2>
-            <p>Please complete all required fields</p>
-          </>
-        )}
 
         <CurrentStepComponent data={profileData} setData={setProfileData} />
 
@@ -118,10 +108,7 @@ export default function ProfileForm() {
             >
               Edit Profile
             </button>
-            <button 
-              type="submit" 
-              className="button-primary"
-            >
+            <button type="submit" className="button-primary">
               Submit Profile
             </button>
           </div>
@@ -135,11 +122,7 @@ export default function ProfileForm() {
             >
               Previous
             </button>
-            <button 
-              type="button" 
-              className="button-primary"
-              onClick={nextStep}
-            >
+            <button type="button" className="button-primary" onClick={nextStep}>
               Next
             </button>
           </div>

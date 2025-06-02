@@ -4,7 +4,7 @@ import ApplicantDashboard from "../features/dashboard/components/ApplicantDashbo
 import { useAuth } from "../hooks/useAuth";
 
 export default function DashboardPage() {
-  const auth = useAuth();
+  const { user } = useAuth();
 
   const roleViews: Record<string, React.FC> = {
     admin: AdminDashboard,
@@ -12,13 +12,13 @@ export default function DashboardPage() {
     // mentor: MentorDashboard,
   };
 
-  const RoleDashboard = auth.user
-    ? roleViews[auth.user.role]
+  const RoleDashboard = user
+    ? roleViews[user.role]
     : () => <p>Dashboard coming soon for your role.</p>;
 
   return (
     <div className="p-4">
-      <h1>Welcome</h1>
+      <h1>Welcome {user?.firstName}</h1>
 
       <RoleDashboard />
     </div>

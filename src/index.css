@@ -81,13 +81,13 @@ form div {
   margin: 8px 0;
 }
 
-form label {
+label {
   margin-bottom: 6px;
 }
 
-form input,
-form textarea,
-form select {
+input,
+textarea,
+select {
   font-size: 1rem;
   padding: 0.5rem;
   border: 1px solid var(--dark-bg-color);
@@ -95,9 +95,9 @@ form select {
   transition: border-color 0.2s ease;
 }
 
-form input:focus,
-form textarea:focus,
-form select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--dark-bg-color);
   outline: none;
   background-color: var(--light-bg-color);

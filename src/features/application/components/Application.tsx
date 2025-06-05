@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../hooks/useAuth";
+import type { Application } from "../types/application";
 
 export default function Application() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
-  const [application, setApplication] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [application, setApplication] = useState<Application | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUserApplication = async () => {

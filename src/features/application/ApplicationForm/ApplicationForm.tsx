@@ -15,7 +15,7 @@ export default function ApplicationForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const [applicationData, setApplicationData] = useState<Application>({
     userId: user?._id || "",
     status: "draft",

@@ -6,7 +6,7 @@ export default function Header() {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const toggleMenu = () => {
     setIsMenuOpen((prevState) => !prevState);

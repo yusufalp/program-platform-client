@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../hooks/useAuth";
+import type { Profile } from "../types/profile";
 
 export default function Profile() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
 
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -17,7 +18,10 @@ export default function Profile() {
 
         const url = `${PROFILE_SERVICE_URL}/user/${user?._id}`;
         const options: RequestInit = {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         };
 
         const response = await fetch(url, options);

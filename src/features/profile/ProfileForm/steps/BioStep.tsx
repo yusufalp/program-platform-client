@@ -1,3 +1,4 @@
+import { today } from "../../../../lib/getToday";
 import type { StepProps } from "../../types/profile";
 
 export default function BioStep({ data, setData }: StepProps) {
@@ -11,9 +12,6 @@ export default function BioStep({ data, setData }: StepProps) {
       [name]: value,
     }));
   };
-
-  // Get today's date in YYYY-MM-DD format for the max attribute
-  const today = new Date().toISOString().split("T")[0];
 
   return (
     <div>

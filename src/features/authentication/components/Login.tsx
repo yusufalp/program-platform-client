@@ -19,7 +19,7 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const USER_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/users`;
+    const USER_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
 
     const url = `${USER_SERVICE_URL}/login`;
     const options: RequestInit = {

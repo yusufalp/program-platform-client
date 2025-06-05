@@ -14,6 +14,7 @@ import Login from "./features/authentication/components/Login";
 import Register from "./features/authentication/components/Register";
 import ProfileForm from "./features/profile/ProfileForm/ProfileForm";
 import ApplicationForm from "./features/application/ApplicationForm/ApplicationForm";
+import Attendance from "./features/attendance/components/Attendance";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/profile-form" element={<ProfileForm />} />
             <Route path="/application" element={<ApplicationPage />} />
             <Route path="/application-form" element={<ApplicationForm />} />
+            <Route path="/attendance" element={<Attendance />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

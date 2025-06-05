@@ -1,5 +1,6 @@
 import AdminDashboard from "../features/dashboard/components/AdminDashboard";
 import ApplicantDashboard from "../features/dashboard/components/ApplicantDashboard";
+import MentorDashboard from "../features/dashboard/components/MentorDashboard";
 
 import { useAuth } from "../hooks/useAuth";
 
@@ -9,7 +10,7 @@ export default function DashboardPage() {
   const roleViews: Record<string, React.FC> = {
     admin: AdminDashboard,
     applicant: ApplicantDashboard,
-    // mentor: MentorDashboard,
+    mentor: MentorDashboard,
   };
 
   const RoleDashboard = user

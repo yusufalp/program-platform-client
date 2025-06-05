@@ -7,7 +7,7 @@ export default function ProfilePage() {
   const roleProfiles: Record<string, React.FC> = {
     admin: Profile,
     applicant: Profile,
-    // mentor: MentorProfile
+    mentor: Profile
   };
 
   const RoleProfile = user

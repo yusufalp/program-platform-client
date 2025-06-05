@@ -1,4 +1,5 @@
 export interface Application {
+  _id: string;
   userId: string;
   status: string;
   location: {

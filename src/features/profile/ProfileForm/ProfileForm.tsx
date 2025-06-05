@@ -13,8 +13,9 @@ export default function ProfileForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const [profileData, setProfileData] = useState<Profile>({
+    _id: "",
     userId: user?._id || "",
     bio: "",
     dateOfBirth: "",
@@ -58,7 +59,7 @@ export default function ProfileForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('profileData :>> ', profileData);
+    console.log("profileData :>> ", profileData);
 
     try {
       const body = { ...profileData };
@@ -96,7 +97,6 @@ export default function ProfileForm() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-
         <CurrentStepComponent data={profileData} setData={setProfileData} />
 
         {currentStep === steps.length - 1 ? (

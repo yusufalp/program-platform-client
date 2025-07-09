@@ -6,6 +6,7 @@ import type { Profile } from "../types/profile";
 
 export default function Profile() {
   const { user, token } = useAuth();
+  
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<Profile | null>(null);

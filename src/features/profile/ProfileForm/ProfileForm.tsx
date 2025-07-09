@@ -11,11 +11,11 @@ import ReviewStep from "./steps/ReviewStep";
 
 export default function ProfileForm() {
   const { user } = useAuth();
+
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [profileData, setProfileData] = useState<Profile>({
-    _id: "",
     userId: user?._id || "",
     bio: "",
     dateOfBirth: "",
@@ -35,6 +35,9 @@ export default function ProfileForm() {
     },
     socials: {},
   });
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const steps = [
     { component: AddressStep, title: "Address" },
@@ -57,9 +60,15 @@ export default function ProfileForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  if (!user?._id) {
+    return <p>You must login to see your profile.</p>;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("profileData :>> ", profileData);
+
+    setLoading(true);
+    setError(null);
 
     const body = { ...profileData };
 
@@ -80,15 +89,20 @@ export default function ProfileForm() {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      console.log("result :>> ", result);
 
       if (!response.ok) {
         throw new Error(result.message || "Failed to submit Profile");
       }
 
       navigate("/profile");
-    } catch (error) {
-      console.log(error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -97,17 +111,20 @@ export default function ProfileForm() {
       <form onSubmit={handleSubmit}>
         <CurrentStepComponent data={profileData} setData={setProfileData} />
 
+        {error && <p>{error}</p>}
+
         {currentStep === steps.length - 1 ? (
           <div className="form-actions">
             <button
               type="button"
               className="button-secondary"
               onClick={() => setCurrentStep(0)}
+              disabled={loading}
             >
               Edit Profile
             </button>
-            <button type="submit" className="button-primary">
-              Submit Profile
+            <button type="submit" className="button-primary" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Profile"}
             </button>
           </div>
         ) : (
@@ -116,11 +133,16 @@ export default function ProfileForm() {
               type="button"
               className="button-secondary"
               onClick={prevStep}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || loading}
             >
               Previous
             </button>
-            <button type="button" className="button-primary" onClick={nextStep}>
+            <button
+              type="button"
+              className="button-primary"
+              onClick={nextStep}
+              disabled={loading}
+            >
               Next
             </button>
           </div>

@@ -55,6 +55,9 @@ export default function ApplicationForm() {
     comments: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const steps = [
     { component: LocationAndReferralStep, title: "Location and Referral" },
     {
@@ -84,6 +87,9 @@ export default function ApplicationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    setLoading(true);
+    setError(null);
+
     const body = { ...applicationData };
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
@@ -107,12 +113,16 @@ export default function ApplicationForm() {
       console.log("result :>> ", result);
 
       if (!response.ok) {
+        setError(result.message || "Something went wrong");
         throw new Error(result.message || "Something went wrong");
       }
 
       navigate("/application");
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      setError(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -124,17 +134,20 @@ export default function ApplicationForm() {
           setData={setApplicationData}
         />
 
+        {error && <p>{error}</p>}
+
         {currentStep === steps.length - 1 ? (
           <div className="form-actions">
             <button
               type="button"
               className="button-secondary"
               onClick={() => setCurrentStep(0)}
+              disabled={loading}
             >
               Edit Application
             </button>
-            <button type="button" className="button-primary">
-              Submit Application
+            <button type="submit" className="button-primary" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Application"}
             </button>
           </div>
         ) : (
@@ -143,11 +156,16 @@ export default function ApplicationForm() {
               type="button"
               className="button-secondary"
               onClick={prevStep}
-              disabled={currentStep === 0}
+              disabled={currentStep === 0 || loading}
             >
               Previous
             </button>
-            <button type="button" className="button-primary" onClick={nextStep}>
+            <button
+              type="button"
+              className="button-primary"
+              onClick={nextStep}
+              disabled={currentStep === steps.length - 1 || loading}
+            >
               Next
             </button>
           </div>

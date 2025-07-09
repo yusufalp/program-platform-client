@@ -9,9 +9,17 @@ export default function Profile() {
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<Profile | null>(null);
+
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user?._id) {
+      setLoading(false);
+      setError("You must be logged in to see your profile.");
+      return;
+    }
+
     const fetchUserProfile = async () => {
       const baseUrl = import.meta.env.VITE_BASE_URL as string;
       const endpoint = `/profile/user/${user?._id}`;
@@ -37,8 +45,12 @@ export default function Profile() {
         } else {
           throw new Error(result.message || "Server error");
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -49,11 +61,14 @@ export default function Profile() {
 
   if (loading) return <p>Loading...</p>;
 
+  if (error) return <p>{error}</p>;
+
   return (
     <div>
       <h2>Profile</h2>
       {profile ? (
         <p>See your profile below</p>
+        // add profile component here
       ) : (
         <>
           <p>You have not completed your profile yet.</p>

@@ -9,9 +9,17 @@ export default function Application() {
   const navigate = useNavigate();
 
   const [application, setApplication] = useState<Application | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!user?._id) {
+      setLoading(false);
+      setError("You must be logged in to see the application");
+      return;
+    }
+
     const fetchUserApplication = async () => {
       const baseUrl = import.meta.env.VITE_BASE_URL as string;
       const endpoint = `/application/user/${user?._id}`;
@@ -38,8 +46,12 @@ export default function Application() {
         } else {
           throw new Error(result.message || "Server error");
         }
-      } catch (error) {
-        console.log(error);
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message);
+        } else {
+          setError("An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
@@ -50,11 +62,14 @@ export default function Application() {
 
   if (loading) return <p>Loading...</p>;
 
+  if (error) return <p>{error}</p>;
+
   return (
     <div>
       <h2>Application</h2>
       {application ? (
         <p>Review your application below</p>
+        // add application component here
       ) : (
         <>
           <p>You have not completed an application</p>

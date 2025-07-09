@@ -13,26 +13,30 @@ export default function Application() {
 
   useEffect(() => {
     const fetchUserApplication = async () => {
+      const baseUrl = import.meta.env.VITE_BASE_URL as string;
+      const endpoint = `/application/user/${user?._id}`;
+
+      const url = new URL(`${baseUrl}${endpoint}`);
+
+      const options: RequestInit = {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
       try {
-        const APPLICATION_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/application`;
-
-        const url = `${APPLICATION_SERVICE_URL}/user/${user?._id}`;
-        const options: RequestInit = {
-          headers: { Authorization: `Bearer ${token}` },
-        };
-
         const response = await fetch(url, options);
+        const result = await response.json();
 
         if (response.ok) {
-          const result = await response.json();
-
           setApplication(result.data.application);
         } else if (response.status === 404) {
           setApplication(null);
         } else {
-          const error = await response.json();
-
-          throw new Error(error.message || "Server error");
+          throw new Error(result.message || "Server error");
         }
       } catch (error) {
         console.log(error);

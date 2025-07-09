@@ -19,9 +19,11 @@ export default function Login() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const USER_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = "/user/login";
 
-    const url = `${USER_SERVICE_URL}/login`;
+    const url = new URL(`${baseUrl}${endpoint}`);
+
     const options: RequestInit = {
       method: "POST",
       credentials: "include",
@@ -33,9 +35,9 @@ export default function Login() {
 
     try {
       const response = await fetch(url, options);
+      const result = await response.json();
 
       if (response.ok) {
-        const result = await response.json();
         const { data, token } = result;
 
         login(data.user, token);

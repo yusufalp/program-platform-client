@@ -27,45 +27,39 @@ export default function Attendance() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!token) return;
-
-    const fetchAllCohorts = async () => {
+    if (!token) {
       setIsLoadingCohorts(false);
       setError("Authentication required");
+      return;
+    }
+
+    const fetchAllCohorts = async () => {
+      setIsLoadingCohorts(true);
+      setError(null);
+
+      const baseUrl = import.meta.env.VITE_BASE_URL as string;
+      const endpoint = "/cohort";
+
+      const url = new URL(`${baseUrl}${endpoint}`);
+
+      const options: RequestInit = {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
 
       try {
-        setIsLoadingCohorts(true);
-        setError(null);
-
-        const COHORT_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/cohort`;
-
-        if (!COHORT_SERVICE_URL) {
-          throw new Error("Cohort service URL is not configured");
-        }
-
-        const url = `${COHORT_SERVICE_URL}`;
-
-        const options: RequestInit = {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
         const response = await fetch(url, options);
+        const result = await response.json();
 
         if (!response.ok) {
-          const errorData = await response.json();
-          console.log("errorData :>> ", errorData);
           throw new Error(
-            errorData.message ||
-              `Failed to retrieve cohorts: ${errorData.statusText}`
+            result.message || `Failed to retrieve cohorts: ${result.statusText}`
           );
         }
-
-        const result = await response.json();
 
         if (result.data && Array.isArray(result.data.cohorts)) {
           setAllCohorts(result.data.cohorts || []);
@@ -88,28 +82,37 @@ export default function Attendance() {
       return;
     }
 
+    setIsLoadingStudents(true);
+    setError(null);
+
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = "/attendance/check";
+
+    const url = new URL(`${baseUrl}${endpoint}`);
+
+    url.searchParams.set("cohortId", selectedCohortId);
+    url.searchParams.set("date", selectedDate);
+
+    const options: RequestInit = {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+
     try {
-      setIsLoadingStudents(true);
-      setError(null);
+      const checkAttendanceResponse = await fetch(url, options);
+      const checkAttendanceResult = await checkAttendanceResponse.json();
 
-      // Check attendance
-      const checkRes = await fetch(
-        `${
-          import.meta.env.VITE_BASE_URL
-        }/attendance/check?cohortId=${selectedCohortId}&date=${selectedDate}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const checkResult = await checkRes.json();
-      if (!checkRes.ok) throw new Error(checkResult.message);
+      if (!checkAttendanceResponse.ok) {
+        throw new Error(checkAttendanceResult.message);
+      }
 
-      if (checkResult.data.attendance) {
-        setAttendanceId(checkResult.data.attendance._id);
-        const attendance = checkResult.data.attendance;
-        console.log("attendance :>> ", attendance);
+      if (checkAttendanceResult.data.attendance) {
+        setAttendanceId(checkAttendanceResult.data.attendance._id);
+        const attendance = checkAttendanceResult.data.attendance;
 
         const normalizedStudents = attendance.records.map(
           (record: {
@@ -157,21 +160,30 @@ export default function Attendance() {
       } else {
         // No attendance — load students
         setAttendanceId(null);
-        const stuRes = await fetch(
-          `${import.meta.env.VITE_BASE_URL}/student/${selectedCohortId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const stuResult = await stuRes.json();
-        if (!stuRes.ok) throw new Error(stuResult.message);
+        const baseUrl = import.meta.env.VITE_BASE_URL as string;
+        const endpoint = `/student/${selectedCohortId}`;
 
-        setStudents(stuResult.data.students);
+        const url = new URL(`${baseUrl}${endpoint}`);
+
+        const options: RequestInit = {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        };
+
+        const studentResponse = await fetch(url, options);
+        const studentResult = await studentResponse.json();
+
+        if (!studentResponse.ok) {
+          throw new Error(studentResult.message);
+        }
+
+        setStudents(studentResult.data.students);
         setAttendanceRecords(
-          stuResult.data.students.reduce(
+          studentResult.data.students.reduce(
             (acc: Record<string, AttendanceRecord>, student: Student) => {
               acc[student._id] = { studentId: student._id, status: "present" };
               return acc;
@@ -193,44 +205,43 @@ export default function Attendance() {
       return;
     }
 
+    setIsSavingAttendance(true);
+    setError(null);
+    
     const records = students.map((s) => attendanceRecords[s._id]);
 
-    try {
-      setIsSavingAttendance(true);
-      setError(null);
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = attendanceId
+      ? `/attendance/update/${attendanceId}`
+      : "/attendance/save";
 
-      const url = attendanceId
-        ? `${import.meta.env.VITE_BASE_URL}/attendance/update/${attendanceId}`
-        : `${import.meta.env.VITE_BASE_URL}/attendance/save`;
-      console.log("url :>> ", attendanceId, url);
+    const url = new URL(`${baseUrl}${endpoint}`);
 
-      const method = attendanceId ? "PATCH" : "POST";
-      console.log("object :>> ", {
+    const method = attendanceId ? "PATCH" : "POST";
+    const options: RequestInit = {
+      method,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
         cohortId: selectedCohortId,
         date: selectedDate,
         takenBy: user?._id,
         records,
-      });
+      }),
+    };
 
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          cohortId: selectedCohortId,
-          date: selectedDate,
-          takenBy: user?._id,
-          records,
-        }),
-      });
+    try {
+      const response = await fetch(url, options);
+      const result = await response.json();
 
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message);
+      if (!response.ok) {
+        throw new Error(result.message);
+      }
 
       alert("Attendance saved successfully");
-      // navigate("/dashboard");
     } catch (error) {
       console.log(error);
     } finally {

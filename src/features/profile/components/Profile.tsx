@@ -13,29 +13,29 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      const baseUrl = import.meta.env.VITE_BASE_URL as string;
+      const endpoint = `/profile/user/${user?._id}`;
+
+      const url = new URL(`${baseUrl}${endpoint}`);
+      const options: RequestInit = {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+
       try {
-        const PROFILE_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/profile`;
-
-        const url = `${PROFILE_SERVICE_URL}/user/${user?._id}`;
-        const options: RequestInit = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        };
-
         const response = await fetch(url, options);
+        const result = await response.json();
 
         if (response.ok) {
-          const result = await response.json();
-
           setProfile(result.data.profile);
         } else if (response.status === 404) {
           setProfile(null);
         } else {
-          const error = await response.json();
-
-          throw new Error(error.message || "Server error");
+          throw new Error(result.message || "Server error");
         }
       } catch (error) {
         console.log(error);

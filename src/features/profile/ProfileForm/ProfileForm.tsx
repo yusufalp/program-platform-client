@@ -61,32 +61,30 @@ export default function ProfileForm() {
     e.preventDefault();
     console.log("profileData :>> ", profileData);
 
+    const body = { ...profileData };
+
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = "/profile/create";
+
+    const url = new URL(`${baseUrl}${endpoint}`);
+
+    const options: RequestInit = {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+    };
+
     try {
-      const body = { ...profileData };
-
-      const PROFILE_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/profile`;
-
-      const url = `${PROFILE_SERVICE_URL}/create`;
-      const options: RequestInit = {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-
       const response = await fetch(url, options);
-      console.log("response :>> ", response);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("errorData :>> ", errorData);
-        throw new Error(errorData.message || "Failed to submit Profile");
-      }
-
       const result = await response.json();
       console.log("result :>> ", result);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to submit Profile");
+      }
 
       navigate("/profile");
     } catch (error) {

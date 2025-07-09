@@ -19,9 +19,11 @@ export default function Register() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const USER_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/user`;
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = "/user/register";
 
-    const url = `${USER_SERVICE_URL}/register`;
+    const url = new URL(`${baseUrl}${endpoint}`);
+    
     const options: RequestInit = {
       method: "POST",
       credentials: "include",

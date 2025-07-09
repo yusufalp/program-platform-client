@@ -12,7 +12,7 @@ import LogicProblemStep from "./steps/LogicProblemStep";
 import ReviewStep from "./steps/ReviewStep";
 
 export default function ApplicationForm() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
@@ -83,36 +83,32 @@ export default function ApplicationForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("applicationData :>> ", applicationData);
+
+    const body = { ...applicationData };
+
+    const baseUrl = import.meta.env.VITE_BASE_URL as string;
+    const endpoint = "/application/create";
+
+    const url = new URL(`${baseUrl}${endpoint}`);
+
+    const options: RequestInit = {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(body),
+    };
 
     try {
-      const body = { ...applicationData };
-
-      const APPLICATION_SERVICE_URL = `${
-        import.meta.env.VITE_BASE_URL
-      }/application`;
-
-      const url = `${APPLICATION_SERVICE_URL}/create`;
-      const options: RequestInit = {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      };
-
       const response = await fetch(url, options);
-      console.log("response :>> ", response);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("errorData :>> ", errorData);
-        throw new Error(errorData.message || "Something went wrong");
-      }
-
       const result = await response.json();
       console.log("result :>> ", result);
+
+      if (!response.ok) {
+        throw new Error(result.message || "Something went wrong");
+      }
 
       navigate("/application");
     } catch (error) {

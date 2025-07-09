@@ -1,29 +1,41 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
+import type { RegisterForm } from "../types/registrationForm";
 
 export default function Register() {
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<RegisterForm>({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!form.email || !form.firstName || !form.lastName || !form.password) {
+      setError("All fields are required.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
     const endpoint = "/user/register";
 
     const url = new URL(`${baseUrl}${endpoint}`);
-    
+
     const options: RequestInit = {
       method: "POST",
       credentials: "include",
@@ -38,11 +50,18 @@ export default function Register() {
       const result = await response.json();
 
       if (response.ok) {
-        console.log(result.message);
         navigate("/login");
+      } else {
+        throw new Error(result.message || "Registration failed.");
       }
-    } catch (error) {
-      console.log("error :>> ", error);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -57,8 +76,10 @@ export default function Register() {
             type="text"
             name="firstName"
             id="firstName"
+            required
             value={form.firstName}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
         <div>
@@ -67,8 +88,10 @@ export default function Register() {
             type="text"
             name="lastName"
             id="lastName"
+            required
             value={form.lastName}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
         <div>
@@ -77,8 +100,10 @@ export default function Register() {
             type="email"
             name="email"
             id="email"
+            required
             value={form.email}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
         <div>
@@ -87,11 +112,18 @@ export default function Register() {
             type="password"
             name="password"
             id="password"
+            required
             value={form.password}
             onChange={handleChange}
+            disabled={loading}
           />
         </div>
-        <button type="submit">Register</button>
+
+        {error && <p>{error}</p>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registering..." : "Register"}
+        </button>
         <p>
           {`Already have an account?`} <Link to="/login">Login</Link>
         </p>

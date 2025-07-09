@@ -118,6 +118,7 @@ export default function ApplicationForm() {
       }
 
       navigate("/application");
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.log(error);
       setError(error.message || "An unexpected error occurred.");

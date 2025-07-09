@@ -1,4 +1,4 @@
-export type AttendanceStatus = "present" | "absent" | "late";
+import type { AttendanceStatus } from "../../../constants/attendanceStatuses";
 
 export type AttendanceRecord = {
   studentId: string;

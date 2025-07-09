@@ -18,6 +18,7 @@ export default function Attendance() {
   const [attendanceRecords, setAttendanceRecords] = useState<
     Record<string, AttendanceRecord>
   >({});
+  const [attendanceId, setAttendanceId] = useState<string | null>(null);
 
   const [isLoadingCohorts, setIsLoadingCohorts] = useState<boolean>(true);
   const [isLoadingStudents, setIsLoadingStudents] = useState<boolean>(false);
@@ -26,12 +27,11 @@ export default function Attendance() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!token) return;
+
     const fetchAllCohorts = async () => {
-      if (!token) {
-        setIsLoadingCohorts(false);
-        setError("Authentication required");
-        return;
-      }
+      setIsLoadingCohorts(false);
+      setError("Authentication required");
 
       try {
         setIsLoadingCohorts(true);
@@ -44,7 +44,7 @@ export default function Attendance() {
         }
 
         const url = `${COHORT_SERVICE_URL}`;
-        console.log("url :>> ", url);
+
         const options: RequestInit = {
           method: "GET",
           credentials: "include",
@@ -55,7 +55,6 @@ export default function Attendance() {
         };
 
         const response = await fetch(url, options);
-        console.log("response :>> ", response);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -67,10 +66,9 @@ export default function Attendance() {
         }
 
         const result = await response.json();
-        console.log("result :>> ", result);
 
         if (result.data && Array.isArray(result.data.cohorts)) {
-          setAllCohorts(result.data.cohorts);
+          setAllCohorts(result.data.cohorts || []);
         } else {
           throw new Error("Invalid data format received for cohorts");
         }
@@ -83,6 +81,162 @@ export default function Attendance() {
 
     fetchAllCohorts();
   }, [token]);
+
+  const handleLoadStudents = useCallback(async () => {
+    if (!selectedCohortId || !selectedDate || !token) {
+      setError("Please select both cohort and date");
+      return;
+    }
+
+    try {
+      setIsLoadingStudents(true);
+      setError(null);
+
+      // Check attendance
+      const checkRes = await fetch(
+        `${
+          import.meta.env.VITE_BASE_URL
+        }/attendance/check?cohortId=${selectedCohortId}&date=${selectedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const checkResult = await checkRes.json();
+      if (!checkRes.ok) throw new Error(checkResult.message);
+
+      if (checkResult.data.attendance) {
+        setAttendanceId(checkResult.data.attendance._id);
+        const attendance = checkResult.data.attendance;
+        console.log("attendance :>> ", attendance);
+
+        const normalizedStudents = attendance.records.map(
+          (record: {
+            studentId: {
+              _id: string;
+              userId: { _id: string; firstName: string; lastName: string };
+            };
+          }) => ({
+            _id: record.studentId._id,
+            userId: {
+              _id: record.studentId.userId._id,
+              firstName: record.studentId.userId.firstName,
+              lastName: record.studentId.userId.lastName,
+            },
+          })
+        );
+
+        const normalizedRecords = attendance.records.reduce(
+          (
+            acc: {
+              [x: string]: {
+                studentId: string | number;
+                status: string;
+                note: string;
+              };
+            },
+            record: {
+              studentId: { _id: string | number };
+              status: string;
+              note: string;
+            }
+          ) => {
+            acc[record.studentId._id] = {
+              studentId: record.studentId._id,
+              status: record.status,
+              note: record.note,
+            };
+            return acc;
+          },
+          {}
+        );
+
+        setStudents(normalizedStudents);
+        setAttendanceRecords(normalizedRecords);
+      } else {
+        // No attendance — load students
+        setAttendanceId(null);
+        const stuRes = await fetch(
+          `${import.meta.env.VITE_BASE_URL}/student/${selectedCohortId}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const stuResult = await stuRes.json();
+        if (!stuRes.ok) throw new Error(stuResult.message);
+
+        setStudents(stuResult.data.students);
+        setAttendanceRecords(
+          stuResult.data.students.reduce(
+            (acc: Record<string, AttendanceRecord>, student: Student) => {
+              acc[student._id] = { studentId: student._id, status: "present" };
+              return acc;
+            },
+            {}
+          )
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoadingStudents(false);
+    }
+  }, [selectedCohortId, selectedDate, token]);
+
+  const handleSaveAttendance = async () => {
+    if (!selectedCohortId || !selectedDate || students.length === 0 || !token) {
+      setError("Please load students before saving");
+      return;
+    }
+
+    const records = students.map((s) => attendanceRecords[s._id]);
+
+    try {
+      setIsSavingAttendance(true);
+      setError(null);
+
+      const url = attendanceId
+        ? `${import.meta.env.VITE_BASE_URL}/attendance/update/${attendanceId}`
+        : `${import.meta.env.VITE_BASE_URL}/attendance/save`;
+      console.log("url :>> ", attendanceId, url);
+
+      const method = attendanceId ? "PATCH" : "POST";
+      console.log("object :>> ", {
+        cohortId: selectedCohortId,
+        date: selectedDate,
+        takenBy: user?._id,
+        records,
+      });
+
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          cohortId: selectedCohortId,
+          date: selectedDate,
+          takenBy: user?._id,
+          records,
+        }),
+      });
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+
+      alert("Attendance saved successfully");
+      // navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSavingAttendance(false);
+    }
+  };
 
   const handleCohortIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCohortId(e.target.value);
@@ -115,108 +269,6 @@ export default function Attendance() {
         },
       };
     });
-  };
-
-  const handleLoadStudents = useCallback(async () => {
-    if (!selectedCohortId || !selectedDate || !token) {
-      setError("Please select both cohort and the date");
-      return;
-    }
-
-    try {
-      setIsLoadingStudents(true);
-      setError(null);
-      setStudents([]);
-
-      const STUDENT_SERVICE_URL = `${import.meta.env.VITE_BASE_URL}/student`;
-
-      const url = `${STUDENT_SERVICE_URL}/${selectedCohortId}`;
-      const options: RequestInit = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-
-      const response = await fetch(url, options);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.log("errorData :>> ", errorData);
-        throw new Error(errorData.message || "Failed to fetch students");
-      }
-
-      const studentsResult = await response.json();
-      setStudents(studentsResult.data.students);
-      setAttendanceRecords(
-        studentsResult.data.students.reduce(
-          (acc: Record<string, AttendanceRecord>, student: Student) => {
-            acc[student._id] = {
-              studentId: student._id,
-              status: "present",
-            };
-            return acc;
-          },
-          {}
-        )
-      );
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoadingStudents(false);
-    }
-  }, [selectedCohortId, selectedDate, token]);
-
-  const handleSaveAttendance = async () => {
-    if (!selectedCohortId || !selectedDate || students.length === 0 || !token) {
-      setError("Please ensure cohort, date, students are loaded");
-      return;
-    }
-
-    const body = {
-      cohortId: selectedCohortId,
-      date: selectedDate,
-      takenBy: user?._id,
-      records: students.map((student) => ({
-        ...attendanceRecords[student._id],
-      })),
-    };
-
-    console.log("body :>> ", body);
-
-    try {
-      setIsSavingAttendance(true);
-      setError(null);
-
-      const ATTENDANCE_SERVICE_URL = `${
-        import.meta.env.VITE_BASE_URL
-      }/attendance`;
-
-      const url = `${ATTENDANCE_SERVICE_URL}/create`;
-      const options: RequestInit = {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(body),
-      };
-
-      const response = await fetch(url, options);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Problem when saving attendance");
-      }
-
-      console.log("Attendance save successfully.");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsSavingAttendance(false);
-    }
   };
 
   return (
@@ -285,7 +337,7 @@ export default function Attendance() {
               const currentStatus =
                 attendanceRecords[student._id]?.status || "";
               return (
-                <div>
+                <div key={student._id}>
                   <div className="attendance-list">
                     <span className="student-name">
                       {student.userId.firstName} {student.userId.lastName}
@@ -330,7 +382,7 @@ export default function Attendance() {
             })}
           </div>
           <button onClick={handleSaveAttendance} disabled={isSavingAttendance}>
-            {isSavingAttendance ? "Saving" : "Save Attendance"}
+            {isSavingAttendance ? "Saving..." : "Save Attendance"}
           </button>
         </div>
       ) : (

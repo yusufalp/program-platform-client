@@ -68,7 +68,7 @@ export default function ApplicationForm() {
     { component: LogicProblemStep, title: "Logic Problem" },
     { component: PersonalStatementStep, title: "Personal Statement" },
     { component: ReviewStep, title: "Review Application" },
-  ];
+  ] as const;
 
   const CurrentStepComponent = steps[currentStep].component;
 
@@ -110,7 +110,6 @@ export default function ApplicationForm() {
     try {
       const response = await fetch(url, options);
       const result = await response.json();
-      console.log("result :>> ", result);
 
       if (!response.ok) {
         setError(result.message || "Something went wrong");
@@ -118,10 +117,12 @@ export default function ApplicationForm() {
       }
 
       navigate("/application");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.log(error);
-      setError(error.message || "An unexpected error occurred.");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }

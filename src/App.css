@@ -180,8 +180,8 @@ nav li a:hover {
 }
 
 .attendance-list {
+  border-bottom: 1px solid black;
   display: flex;
-  align-items: center;
   margin-bottom: 12px;
   gap: 24px;
 }

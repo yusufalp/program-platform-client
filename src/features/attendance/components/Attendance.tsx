@@ -328,12 +328,7 @@ export default function Attendance() {
       {isLoadingStudents ? (
         <p>Loading students and attendance...</p>
       ) : students.length > 0 ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleSaveAttendance();
-          }}
-        >
+        <div>
           <div>
             <h2>Attendance for {selectedDate}</h2>
             <AttendanceStudentList
@@ -343,10 +338,14 @@ export default function Attendance() {
               onNoteChange={handleNoteChange}
             />
           </div>
-          <button type="submit" disabled={isSavingAttendance}>
+          <button
+            type="submit"
+            onClick={handleSaveAttendance}
+            disabled={isSavingAttendance}
+          >
             {isSavingAttendance ? "Saving..." : "Save Attendance"}
           </button>
-        </form>
+        </div>
       ) : (
         !isLoadingCohorts && <p>No Students are registered for this cohort</p>
       )}

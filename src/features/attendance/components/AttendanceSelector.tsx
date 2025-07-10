@@ -14,7 +14,7 @@ export default function AttendanceSelector({
 }: AttendanceSelectorProps) {
   return (
     <div>
-      <h2>Select a cohort and date</h2>
+      <p>Select a cohort and the date, then click "Load Students"</p>
       <div className="attendance-actions">
         <label htmlFor="cohort"></label>
         <select

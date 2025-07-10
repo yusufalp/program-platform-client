@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "../../../hooks/useAuth";
 import { today } from "../../../lib/getToday";
+import { formatDate } from "../../../lib/formatDate";
 
 import type { Cohort } from "../types/cohort";
 import type { Student } from "../types/student";
@@ -268,18 +269,18 @@ export default function Attendance() {
 
   const handleCohortIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCohortId(e.target.value);
-    setStudents([]);
-    setAttendanceRecords({});
-    setError(null);
-    setSuccess(null);
+    // setStudents([]);
+    // setAttendanceRecords({});
+    // setError(null);
+    // setSuccess(null);
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
-    setStudents([]);
-    setAttendanceRecords({});
-    setError(null);
-    setSuccess(null);
+    // setStudents([]);
+    // setAttendanceRecords({});
+    // setError(null);
+    // setSuccess(null);
   };
 
   const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
@@ -311,8 +312,6 @@ export default function Attendance() {
     <div>
       <h1>Attendance</h1>
 
-      {success && <p>{success}</p>}
-
       <AttendanceSelector
         cohorts={allCohorts}
         selectedCohortId={selectedCohortId}
@@ -327,28 +326,29 @@ export default function Attendance() {
 
       {isLoadingStudents ? (
         <p>Loading students and attendance...</p>
-      ) : students.length > 0 ? (
-        <div>
-          <div>
-            <h2>Attendance for {selectedDate}</h2>
-            <AttendanceStudentList
-              students={students}
-              attendanceRecords={attendanceRecords}
-              onStatusChange={handleStatusChange}
-              onNoteChange={handleNoteChange}
-            />
-          </div>
-          <button
-            type="submit"
-            onClick={handleSaveAttendance}
-            disabled={isSavingAttendance}
-          >
-            {isSavingAttendance ? "Saving..." : "Save Attendance"}
-          </button>
-        </div>
       ) : (
-        !isLoadingCohorts && <p>No Students are registered for this cohort</p>
+        students.length > 0 && (
+          <div>
+            <div>
+              <h2>Attendance for {formatDate(selectedDate)}</h2>
+              <AttendanceStudentList
+                students={students}
+                attendanceRecords={attendanceRecords}
+                onStatusChange={handleStatusChange}
+                onNoteChange={handleNoteChange}
+              />
+            </div>
+            <button
+              type="submit"
+              onClick={handleSaveAttendance}
+              disabled={isSavingAttendance}
+            >
+              {isSavingAttendance ? "Saving..." : "Save Attendance"}
+            </button>
+          </div>
+        )
       )}
+      {success && <p>{success}</p>}
     </div>
   );
 }

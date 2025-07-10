@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ATTENDANCE_STATUSES } from "../../../constants/attendanceStatuses";
 import type { AttendanceStudentRowProps } from "../types/student";
 
@@ -7,6 +8,10 @@ export default function AttendanceStudentRow({
   onStatusChange,
   onNoteChange,
 }: AttendanceStudentRowProps) {
+  const [showNoteInput, setShowNoteInput] = useState<boolean>(
+    Boolean(record?.note && record?.note.length > 0)
+  );
+
   return (
     <div className="attendance-list" key={student._id}>
       <span className="student-name">
@@ -27,7 +32,7 @@ export default function AttendanceStudentRow({
           </label>
         ))}
       </span>
-      {record?.status === "late" && (
+      {showNoteInput ? (
         <span className="note-input">
           <label htmlFor={`note-${student._id}`}>Note:</label>
           <input
@@ -37,7 +42,14 @@ export default function AttendanceStudentRow({
             value={record?.note || ""}
             onChange={(e) => onNoteChange(student._id, e.target.value)}
           />
+          <button type="button" onClick={() => setShowNoteInput(false)}>
+            Hide Note
+          </button>
         </span>
+      ) : (
+        <button type="button" onClick={() => setShowNoteInput(true)}>
+          Add Note
+        </button>
       )}
     </div>
   );

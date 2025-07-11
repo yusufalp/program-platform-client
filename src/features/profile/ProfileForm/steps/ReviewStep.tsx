@@ -5,8 +5,8 @@ export default function ReviewStep({ data }: StepProps) {
     <div>
       <h2>Review Your Profile Information</h2>
       <p>
-        Please review all the details below. You can go back to edit any section
-        if needed.
+        Please review all the details below. You can go back to edit your
+        responses
       </p>
 
       <hr className="divider" />

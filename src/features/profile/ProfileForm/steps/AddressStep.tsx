@@ -1,9 +1,30 @@
-import type { StepProps } from "../../types/profile";
+import { useEffect } from "react";
 
 import { STATES } from "../../../../constants/states";
 import { COUNTRIES } from "../../../../constants/countries";
 
-export default function AddressStep({ data, setData }: StepProps) {
+import type { StepProps } from "../../types/profile";
+
+import Required from "../../../../common/components/Required";
+import RequiredFieldsNote from "../../../../common/components/RequiredFieldsNote";
+
+export default function AddressStep({
+  data,
+  setData,
+  setIsStepValid,
+}: StepProps) {
+  useEffect(() => {
+    const valid = !!(
+      data.address.street.line1 &&
+      data.address.city &&
+      data.address.state &&
+      data.address.postalCode &&
+      data.address.country
+    );
+
+    setIsStepValid(valid);
+  }, [data, setIsStepValid]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -37,8 +58,13 @@ export default function AddressStep({ data, setData }: StepProps) {
   return (
     <div>
       <h2>Address Information</h2>
+
+      <RequiredFieldsNote />
+      
       <div>
-        <label htmlFor="line1">Street Line 1</label>
+        <label htmlFor="line1">
+          Street Line 1 <Required />
+        </label>
         <input
           type="text"
           name="line1"
@@ -58,7 +84,9 @@ export default function AddressStep({ data, setData }: StepProps) {
         />
       </div>
       <div>
-        <label htmlFor="city">City</label>
+        <label htmlFor="city">
+          City <Required />
+        </label>
         <input
           type="text"
           name="city"
@@ -68,7 +96,9 @@ export default function AddressStep({ data, setData }: StepProps) {
         />
       </div>
       <div>
-        <label htmlFor="state">State</label>
+        <label htmlFor="state">
+          State <Required />
+        </label>
         <select
           name="state"
           id="state"
@@ -86,7 +116,9 @@ export default function AddressStep({ data, setData }: StepProps) {
         </select>
       </div>
       <div>
-        <label htmlFor="postalCode">Postal Code</label>
+        <label htmlFor="postalCode">
+          Postal Code <Required />
+        </label>
         <input
           type="text"
           name="postalCode"
@@ -96,7 +128,9 @@ export default function AddressStep({ data, setData }: StepProps) {
         />
       </div>
       <div>
-        <label htmlFor="country">Country</label>
+        <label htmlFor="country">
+          Country <Required />
+        </label>
         <select
           name="country"
           id="country"

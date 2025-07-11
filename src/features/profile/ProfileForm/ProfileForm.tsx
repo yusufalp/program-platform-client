@@ -15,7 +15,10 @@ export default function ProfileForm() {
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [isStepValid, setIsStepValid] = useState(false);
+
   const [confirmation, setConfirmation] = useState(false);
+
   const [profileData, setProfileData] = useState<Profile>({
     userId: user?._id || "",
     bio: "",
@@ -110,7 +113,11 @@ export default function ProfileForm() {
   return (
     <div>
       <form onSubmit={handleProfileSubmit}>
-        <CurrentStepComponent data={profileData} setData={setProfileData} />
+        <CurrentStepComponent
+          data={profileData}
+          setData={setProfileData}
+          setIsStepValid={setIsStepValid}
+        />
 
         {error && <p>{error}</p>}
 
@@ -157,7 +164,7 @@ export default function ProfileForm() {
               type="button"
               className="button-primary"
               onClick={nextStep}
-              disabled={loading}
+              disabled={loading || !isStepValid}
             >
               Next
             </button>

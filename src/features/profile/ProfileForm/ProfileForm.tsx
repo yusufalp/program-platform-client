@@ -67,15 +67,6 @@ export default function ProfileForm() {
 
   const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("handle submit is called");
-
-    console.log("--- FORM SUBMISSION TRIGGERED ---");
-    console.log("Event Type:", e.type); // Should log "submit"
-
-    // The 'submitter' property tells us exactly which element triggered the submission.
-    // This is the most important piece of information for debugging.
-    const submitter = (e.nativeEvent as SubmitEvent).submitter;
-    console.log("Submission triggered by:", submitter);
 
     setLoading(true);
     setError(null);
@@ -134,7 +125,7 @@ export default function ProfileForm() {
               />
               I've reviewed and confirmed the information provided.
             </label>
-            
+
             <button
               type="button"
               className="button-secondary"

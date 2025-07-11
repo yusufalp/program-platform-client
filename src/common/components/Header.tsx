@@ -1,9 +1,10 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context/AuthContext";
+
+import { useAuth } from "../../hooks/useAuth";
 
 export default function Header() {
-  const auth = useContext(AuthContext);
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
@@ -15,14 +16,14 @@ export default function Header() {
   const handleLogout = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
 
-    auth?.logout();
+    logout();
     navigate("/login");
     setIsMenuOpen(false);
   };
 
   return (
     <nav className="header-nav">
-      {auth?.token ? (
+      {token ? (
         <div className="header-logged-in">
           <button
             className={`burger-menu-icon ${isMenuOpen ? "open" : ""}`}
@@ -37,27 +38,18 @@ export default function Header() {
           </button>
           <ul className={`burger-menu-items ${isMenuOpen ? "open" : ""}`}>
             <li>
-              <Link
-                to="/dashboard"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/dashboard" onClick={() => setIsMenuOpen(false)}>
                 Dashboard
               </Link>
             </li>
             <li>
-              <Link
-                to="/profile"
-                onClick={() => setIsMenuOpen(false)}
-              >
+              <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
                 Profile
               </Link>
             </li>
-            {auth.user?.role === "applicant" && (
+            {user?.role === "applicant" && (
               <li>
-                <Link
-                  to="/application"
-                  onClick={() => setIsMenuOpen(false)}
-                >
+                <Link to="/application" onClick={() => setIsMenuOpen(false)}>
                   Application
                 </Link>
               </li>

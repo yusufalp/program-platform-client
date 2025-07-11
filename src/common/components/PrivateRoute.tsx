@@ -1,11 +1,19 @@
-import { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 
-import { AuthContext } from "../../context/AuthContext";
+import { useAuth } from "../../hooks/useAuth";
+import { getTokenExpiration } from "../../lib/getTokenExpiration";
 
 const PrivateRoute = () => {
-  const auth = useContext(AuthContext);
-  return auth?.token ? <Outlet /> : <Navigate to="/login" />;
+  const { token, logout } = useAuth();
+
+  const tokenExpiration = token ? getTokenExpiration(token) : null;
+
+  if (!token || !tokenExpiration || Date.now() > tokenExpiration) {
+    logout();
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoute;

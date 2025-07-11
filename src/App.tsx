@@ -1,6 +1,10 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
+
+import { useAuth } from "./hooks/useAuth";
+import { getTokenExpiration } from "./lib/getTokenExpiration";
 
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -17,6 +21,18 @@ import ApplicationForm from "./features/application/ApplicationForm/ApplicationF
 import Attendance from "./features/attendance/components/Attendance";
 
 function App() {
+  const { token, logout } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      const tokenExpiration = getTokenExpiration(token);
+
+      if (!tokenExpiration || Date.now() > tokenExpiration) {
+        logout();
+      }
+    }
+  }, [logout, token]);
+
   return (
     <>
       <Header />

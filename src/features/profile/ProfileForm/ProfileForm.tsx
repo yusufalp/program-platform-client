@@ -15,6 +15,7 @@ export default function ProfileForm() {
   const navigate = useNavigate();
 
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [confirmation, setConfirmation] = useState(false);
   const [profileData, setProfileData] = useState<Profile>({
     userId: user?._id || "",
     bio: "",
@@ -64,8 +65,17 @@ export default function ProfileForm() {
     return <p>You must login to see your profile.</p>;
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("handle submit is called");
+
+    console.log("--- FORM SUBMISSION TRIGGERED ---");
+    console.log("Event Type:", e.type); // Should log "submit"
+
+    // The 'submitter' property tells us exactly which element triggered the submission.
+    // This is the most important piece of information for debugging.
+    const submitter = (e.nativeEvent as SubmitEvent).submitter;
+    console.log("Submission triggered by:", submitter);
 
     setLoading(true);
     setError(null);
@@ -108,22 +118,37 @@ export default function ProfileForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleProfileSubmit}>
         <CurrentStepComponent data={profileData} setData={setProfileData} />
 
         {error && <p>{error}</p>}
 
         {currentStep === steps.length - 1 ? (
           <div className="form-actions">
+            <label htmlFor="confirm">
+              <input
+                type="checkbox"
+                name="confirm"
+                id="confirm"
+                onChange={() => setConfirmation(!confirmation)}
+              />
+              I've reviewed and confirmed the information provided.
+            </label>
+            
             <button
               type="button"
               className="button-secondary"
               onClick={() => setCurrentStep(0)}
               disabled={loading}
             >
-              Edit Profile
+              Edit
             </button>
-            <button type="submit" className="button-primary" disabled={loading}>
+
+            <button
+              type="submit"
+              className="button-primary"
+              disabled={loading || !confirmation}
+            >
               {loading ? "Submitting..." : "Submit Profile"}
             </button>
           </div>

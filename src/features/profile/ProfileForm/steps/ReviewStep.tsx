@@ -1,3 +1,4 @@
+import { formatDate } from "../../../../lib/formatDate";
 import type { StepProps } from "../../types/profile";
 
 export default function ReviewStep({ data }: StepProps) {
@@ -19,7 +20,7 @@ export default function ReviewStep({ data }: StepProps) {
           <p>{data.bio || "Not provided"}</p>
         </div>
         <p>
-          <strong>Date of Birth:</strong> {data.dateOfBirth || "Not provided"}
+          <strong>Date of Birth:</strong> {formatDate(data.dateOfBirth) || "Not provided"}
         </p>
         <p>
           <strong>Phone Number:</strong> {data.phoneNumber || "Not provided"}
@@ -46,7 +47,7 @@ export default function ReviewStep({ data }: StepProps) {
           {data.address.state || "Not provided"}
         </p>
         <p>
-          <strong>Postal Code:</strong>
+          <strong>Postal Code: </strong>
           {data.address.postalCode || "Not provided"}
         </p>
         <p>

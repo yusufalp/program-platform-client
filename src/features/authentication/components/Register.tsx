@@ -20,7 +20,7 @@ export default function Register() {
     setForm((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleRegisterSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!form.email || !form.firstName || !form.lastName || !form.password) {
@@ -67,7 +67,7 @@ export default function Register() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleRegisterSubmit}>
         <h1>Register</h1>
         <p>Let us create your account</p>
         <div>

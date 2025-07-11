@@ -84,7 +84,7 @@ export default function ApplicationForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleApplicationSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     setLoading(true);
@@ -130,7 +130,7 @@ export default function ApplicationForm() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleApplicationSubmit}>
         <CurrentStepComponent
           data={applicationData}
           setData={setApplicationData}

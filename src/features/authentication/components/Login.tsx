@@ -21,7 +21,7 @@ export default function Login() {
     setForm((prevForm) => ({ ...prevForm, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleLoginSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!form.email || !form.password) {
@@ -71,7 +71,7 @@ export default function Login() {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleLoginSubmit}>
         <h1>Login</h1>
         <p>Login to your account </p>
         <div>

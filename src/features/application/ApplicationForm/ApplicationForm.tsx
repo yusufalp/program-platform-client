@@ -93,7 +93,7 @@ export default function ApplicationForm() {
     const body = { ...applicationData };
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
-    const endpoint = "/application/create";
+    const endpoint = "/applications/create";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 

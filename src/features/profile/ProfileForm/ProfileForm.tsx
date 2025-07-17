@@ -39,7 +39,7 @@ export default function ProfileForm() {
       setFormLoading(true);
       try {
         const baseUrl = import.meta.env.VITE_BASE_URL as string;
-        const endpoint = `/profile/user/${user?._id}`;
+        const endpoint = `/profiles/user/${user?._id}`;
         const url = new URL(`${baseUrl}${endpoint}`);
 
         const response = await fetch(url, {
@@ -97,7 +97,7 @@ export default function ProfileForm() {
     const body = { ...profileData };
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
-    const endpoint = "/profile/create";
+    const endpoint = "/profiles/create";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 

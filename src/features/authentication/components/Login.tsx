@@ -33,7 +33,7 @@ export default function Login() {
     setError(null);
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
-    const endpoint = "/user/login";
+    const endpoint = "/users/login";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 

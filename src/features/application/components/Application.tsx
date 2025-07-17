@@ -22,7 +22,7 @@ export default function Application() {
 
     const fetchUserApplication = async () => {
       const baseUrl = import.meta.env.VITE_BASE_URL as string;
-      const endpoint = `/application/user/${user?._id}`;
+      const endpoint = `/applications/user/${user?._id}`;
 
       const url = new URL(`${baseUrl}${endpoint}`);
 

@@ -45,7 +45,7 @@ export default function Attendance() {
       setSuccess(null);
 
       const baseUrl = import.meta.env.VITE_BASE_URL as string;
-      const endpoint = "/cohort";
+      const endpoint = "/cohorts";
 
       const url = new URL(`${baseUrl}${endpoint}`);
 
@@ -96,7 +96,7 @@ export default function Attendance() {
     setSuccess(null);
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
-    const endpoint = "/attendance/check";
+    const endpoint = "/attendances/check";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 
@@ -165,7 +165,7 @@ export default function Attendance() {
         // No attendance — load students
         setAttendanceId(null);
         const baseUrl = import.meta.env.VITE_BASE_URL as string;
-        const endpoint = `/student/${selectedCohortId}`;
+        const endpoint = `/students/${selectedCohortId}`;
 
         const url = new URL(`${baseUrl}${endpoint}`);
 
@@ -225,8 +225,8 @@ export default function Attendance() {
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
     const endpoint = attendanceId
-      ? `/attendance/update/${attendanceId}`
-      : "/attendance/save";
+      ? `/attendances/update/${attendanceId}`
+      : "/attendances/save";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 

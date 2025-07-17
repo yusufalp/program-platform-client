@@ -32,7 +32,7 @@ export default function Register() {
     setError(null);
 
     const baseUrl = import.meta.env.VITE_BASE_URL as string;
-    const endpoint = "/user/register";
+    const endpoint = "/users/register";
 
     const url = new URL(`${baseUrl}${endpoint}`);
 

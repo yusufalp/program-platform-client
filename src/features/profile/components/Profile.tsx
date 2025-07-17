@@ -26,7 +26,7 @@ export default function Profile() {
 
     const fetchUserProfile = async () => {
       const baseUrl = import.meta.env.VITE_BASE_URL as string;
-      const endpoint = `/profile/user/${user?._id}`;
+      const endpoint = `/profiles/user/${user?._id}`;
 
       const url = new URL(`${baseUrl}${endpoint}`);
       const options: RequestInit = {

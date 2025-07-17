@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../hooks/useAuth";
 import type { Profile } from "../types/profile";
+import ProfileBioDetails from "./ProfileBioDetails";
+import ProfileAddressDetails from "./ProfileAddressDetails";
+import ProfileLinksDetails from "./ProfileLinksDetails";
 
 export default function Profile() {
   const { user, token } = useAuth();
-  
+
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -68,16 +71,33 @@ export default function Profile() {
     <div>
       <h2>Profile</h2>
       {profile ? (
-        <p>See your profile below</p>
-        // add profile component here
-      ) : (
         <>
-          <p>You have not completed your profile yet.</p>
-          <button onClick={() => navigate("/profile-form")}>
-            Complete your profile
-          </button>
+          <p>See your profile below</p>
+          <hr className="divider" />
+
+          <section className="review-section">
+            <ProfileBioDetails data={profile} />
+          </section>
+
+          <hr className="divider" />
+
+          <section className="review-section">
+            <ProfileAddressDetails data={profile} />
+          </section>
+
+          <hr className="divider" />
+
+          <section className="review-section">
+            <ProfileLinksDetails data={profile} />
+          </section>
         </>
+      ) : (
+        <p>You have not completed your profile yet.</p>
       )}
+
+      <button onClick={() => navigate("/profile-form")}>
+        {profile ? "Edit" : "Complete"} your profile
+      </button>
     </div>
   );
 }

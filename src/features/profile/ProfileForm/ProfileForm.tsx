@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../../hooks/useAuth";
 import type { Profile } from "../types/profile";
+
+import { getDefaultProfile } from "../../../lib/getDefaultProfile";
 
 import AddressStep from "./steps/AddressStep";
 import BioStep from "./steps/BioStep";
@@ -10,7 +12,7 @@ import LinksStep from "./steps/LinksStep";
 import ReviewStep from "./steps/ReviewStep";
 
 export default function ProfileForm() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   const navigate = useNavigate();
 
@@ -19,29 +21,51 @@ export default function ProfileForm() {
 
   const [confirmation, setConfirmation] = useState(false);
 
-  const [profileData, setProfileData] = useState<Profile>({
-    userId: user?._id || "",
-    bio: "",
-    dateOfBirth: "",
-    phoneNumber: "",
-    status: "active",
-    cohort: 0,
-    graduationDate: "",
-    address: {
-      street: {
-        line1: "",
-        line2: "",
-      },
-      city: "",
-      state: "",
-      postalCode: "",
-      country: "",
-    },
-    socials: {},
-  });
+  const [profileData, setProfileData] = useState<Profile>(
+    getDefaultProfile(user?._id)
+  );
+  const [formLoading, setFormLoading] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user?._id) {
+      setFormLoading(false);
+      return;
+    }
+
+    async function fetchProfile() {
+      setFormLoading(true);
+      try {
+        const baseUrl = import.meta.env.VITE_BASE_URL as string;
+        const endpoint = `/profile/user/${user?._id}`;
+        const url = new URL(`${baseUrl}${endpoint}`);
+
+        const response = await fetch(url, {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const result = await response.json();
+
+        if (response.ok && result.data?.profile) {
+          setProfileData(result.data.profile);
+        } else {
+          setProfileData(getDefaultProfile(user?._id));
+        }
+      } catch {
+        setProfileData(getDefaultProfile(user?._id));
+      } finally {
+        setFormLoading(false);
+      }
+    }
+
+    fetchProfile();
+  }, [token, user]);
 
   const steps = [
     { component: AddressStep, title: "Address" },
@@ -63,10 +87,6 @@ export default function ProfileForm() {
       setCurrentStep((prevStep) => prevStep - 1);
     }
   };
-
-  if (!user?._id) {
-    return <p>You must login to see your profile.</p>;
-  }
 
   const handleProfileSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,6 +129,12 @@ export default function ProfileForm() {
       setLoading(false);
     }
   };
+
+  if (formLoading || !profileData) return <p>Loading profile form...</p>;
+
+  if (!user?._id) {
+    return <p>You must login to see your profile.</p>;
+  }
 
   return (
     <div>

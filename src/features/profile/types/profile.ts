@@ -31,6 +31,6 @@ export interface Profile {
 
 export interface StepProps {
   data: Profile;
-  setData: React.Dispatch<React.SetStateAction<Profile>>;
-  setIsStepValid: (valid: boolean) => void;
+  setData?: React.Dispatch<React.SetStateAction<Profile>>;
+  setIsStepValid?: (valid: boolean) => void;
 }

@@ -3,7 +3,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getTokenExpiration } from "../../lib/getTokenExpiration";
 
-const PrivateRoute = () => {
+export default function PrivateRoute() {
   const { token, logout } = useAuth();
 
   const tokenExpiration = token ? getTokenExpiration(token) : null;
@@ -14,6 +14,4 @@ const PrivateRoute = () => {
   }
 
   return <Outlet />;
-};
-
-export default PrivateRoute;
+}

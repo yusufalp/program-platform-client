@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useAuth } from "../../../hooks/useAuth";
 import { today } from "../../../lib/getToday";
-import { formatDate } from "../../../lib/formatDate";
+import { dateToLocaleString } from "../../../lib/convertDate";
 
 import type { Cohort } from "../types/cohort";
 import type { Student } from "../types/student";
@@ -25,9 +25,11 @@ export default function Attendance() {
   >({});
   const [attendanceId, setAttendanceId] = useState<string | null>(null);
 
-  const [isLoadingCohorts, setIsLoadingCohorts] = useState<boolean>(true);
-  const [isLoadingStudents, setIsLoadingStudents] = useState<boolean>(false);
-  const [isSavingAttendance, setIsSavingAttendance] = useState<boolean>(false);
+  const [isLoadingCohorts, setIsLoadingCohorts] = useState(true);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(false);
+  const [isSavingAttendance, setIsSavingAttendance] = useState(false);
+
+  const [studentsLoaded, setStudentsLoaded] = useState(false);
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -200,6 +202,8 @@ export default function Attendance() {
           )
         );
       }
+
+      setStudentsLoaded(true);
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -269,18 +273,22 @@ export default function Attendance() {
 
   const handleCohortIdChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCohortId(e.target.value);
-    // setStudents([]);
-    // setAttendanceRecords({});
-    // setError(null);
-    // setSuccess(null);
+    setStudents([]);
+    setAttendanceId(null)
+    setAttendanceRecords({});
+    setStudentsLoaded(false);
+    setError(null);
+    setSuccess(null);
   };
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedDate(e.target.value);
-    // setStudents([]);
-    // setAttendanceRecords({});
-    // setError(null);
-    // setSuccess(null);
+    setStudents([]);
+    setAttendanceId(null);
+    setAttendanceRecords({});
+    setStudentsLoaded(false);
+    setError(null);
+    setSuccess(null);
   };
 
   const handleStatusChange = (studentId: string, status: AttendanceStatus) => {
@@ -327,10 +335,10 @@ export default function Attendance() {
       {isLoadingStudents ? (
         <p>Loading students and attendance...</p>
       ) : (
-        students.length > 0 && (
+        studentsLoaded && students.length > 0 && (
           <div>
             <div>
-              <h2>Attendance for {formatDate(selectedDate)}</h2>
+              <h2>Attendance for {dateToLocaleString(selectedDate)}</h2>
               <AttendanceStudentList
                 students={students}
                 attendanceRecords={attendanceRecords}

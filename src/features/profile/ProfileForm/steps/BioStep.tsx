@@ -5,6 +5,7 @@ import type { StepProps } from "../../types/profile";
 
 import RequiredFieldsNote from "../../../../common/components/RequiredFieldsNote";
 import Required from "../../../../common/components/Required";
+import { localStringToDate } from "../../../../lib/convertDate";
 
 export default function BioStep({ data, setData, setIsStepValid }: StepProps) {
   useEffect(() => {
@@ -50,7 +51,7 @@ export default function BioStep({ data, setData, setIsStepValid }: StepProps) {
           type="date"
           name="dateOfBirth"
           id="dateOfBirth"
-          value={data.dateOfBirth}
+          value={localStringToDate(data.dateOfBirth)}
           onChange={handleChange}
           max={today}
         />

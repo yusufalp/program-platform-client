@@ -5,9 +5,9 @@ export default function MentorDashboard() {
 
   return (
     <div>
-      <h2>Mentor Dashboard</h2>
-      <p>Take attendance, schedule meeting and enter notes</p>
-      <button onClick={() => navigate("/attendance")}>Take Attendance</button>
+      <button type="button" onClick={() => navigate("/attendance")}>
+        Attendance
+      </button>
     </div>
   );
 }

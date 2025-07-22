@@ -8,6 +8,10 @@ export interface Cohort {
   isArchived: boolean;
 }
 
+export interface CohortListPageProps {
+  cohorts: Cohort[];
+}
+
 export interface AttendanceSelectorProps {
   cohorts: Cohort[];
   selectedCohortId: string;
